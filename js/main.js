@@ -74,34 +74,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check on scroll
     window.addEventListener('scroll', animateSkillBars);
 
-    // Form validation
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Basic form validation
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            if (!name || !email || !message) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
-            
-            // If validation passes, you can submit the form
-            // For now, we'll just show a success message
-            alert('Thank you for your message! I will get back to you soon.');
-            contactForm.reset();
-        });
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init('V3sjw_MfhhpZlgO3V'); // Your public key
+
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                emailjs.sendForm('service_t895pj8', 'template_spzyzhi', this)
+                    .then(function() {
+                        alert('Message sent successfully!');
+                        contactForm.reset();
+                    }, function(error) {
+                        alert('Failed to send message: ' + error.text);
+                    });
+            });
+        }
     }
 
     // Add fade-in animation to elements when they come into view
