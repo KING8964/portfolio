@@ -144,4 +144,70 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Theme Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+        const icon = themeToggle.querySelector('i');
+        icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    // Back to Top Button
+    const backToTop = document.createElement('button');
+    backToTop.className = 'back-to-top';
+    backToTop.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+    document.body.appendChild(backToTop);
+
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Skills Progress Bar Animation
+    const skills = document.querySelectorAll('.skill');
+    
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressBar = entry.target.querySelector('.progress-bar');
+                const targetWidth = progressBar.getAttribute('aria-valuenow') + '%';
+                progressBar.style.width = targetWidth;
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    skills.forEach(skill => {
+        observer.observe(skill);
+    });
 }); 
